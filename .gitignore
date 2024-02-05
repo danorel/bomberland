@@ -5,5 +5,5 @@ engine/bomberland-engine/dist
 engine/bomberland-engine/coverage
 engine/bomberland-library/lib
 engine/bomberland-library/coverage
-*.pt
 *.png
+.DS_Store

@@ -1,4 +1,4 @@
-# Bomberland engine + starter kits
+# Bomberland tournament
 
 ## About
 
@@ -28,31 +28,14 @@ See: [Documentation](https://www.gocoder.one/docs)
 1. Clone or download this repo.
 2. To train agents, run from the root directory:
 
-a. Train DQN:
+3. To run a tournament from the root directory:
 
 ```shell
-docker-compose -f docker-compose.train.yaml up gym agent-dqn-training --force-recreate --abort-on-container-exit
-```
-
-b. Train PPO:
-
-```shell
-docker-compose -f docker-compose.train.yaml up gym agent-ppo-training --force-recreate --abort-on-container-exit
-```
-
-3. To test the effeciency of the agents on the client, run from the root directory:
-
-```shell
-docker-compose -f docker-compose.test.yaml up --force-recreate --abort-on-container-exit
+docker-compose -f docker-compose.tournament.yaml up --force-recreate --abort-on-container-exit --build
 ```
 
 While the command is running and agents are preparing to play the game, access the client by going to `http://localhost:3000/` in your browser.
 
-4. From the client, you can connect as a `spectator` or `agent` (to play as a human player)
+4. From the client, you must connect as a `spectator`
 
-
-5. To submit the agent for competition:
-
-a. Copy and save a .pt file with your model.
-
-b. Send the .pt file to [Danyil Orel](https://t.me/danorel).
+5. Seed for tournament: 1234

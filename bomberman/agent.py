@@ -1,11 +1,20 @@
 import asyncio
 import os
+import time
+import torch
 import typing
 
+from components.environment.config import (
+    ACTIONS,
+    FWD_MODEL_CONNECTION_DELAY,
+    FWD_MODEL_CONNECTION_RETRIES,
+)
 from components.environment.state import GameState
+from components.state import observation_to_state
 
-GAME_CONNECTION_URI = os.environ.get(
-    'GAME_CONNECTION_STRING') or "ws://127.0.0.1:3000/?role=agent&agentId=agentId&name=defaultName"
+ID = os.environ.get("ID") 
+TEAM = os.environ.get('TEAM')
+GAME_CONNECTION_URI = f"ws://game-engine:3000/?role=agent&agentId={ID}&name={TEAM}"
 
 
 class Agent():
@@ -112,3 +121,26 @@ class Agent():
                 continue 
             else:
                 print(f"Unhandled action: {action} for unit {my_unit_id}")
+
+    async def _make_action(self, game_state, my_agent_id: str, my_unit_id: str):
+        state = observation_to_state(game_state, current_agent_id=my_agent_id, current_unit_id=my_unit_id)
+        action, *_ = self._model(state)
+        action = ACTIONS[int(action.item())]
+        return action
+
+
+def main():
+    print("============================================================================================")
+    print(f"Running: {TEAM}'s agent")
+    print("Connecting to game")
+    for retry in range(FWD_MODEL_CONNECTION_RETRIES):
+        try:
+            Agent(model=torch.load(f"teams/{TEAM}.pt"))
+        except Exception as e:
+            print(f"Retrying to connect with {retry} attempt... Due to: {str(e)}")
+            time.sleep(FWD_MODEL_CONNECTION_DELAY)
+            continue
+        break
+    print("============================================================================================")
+
+main()
